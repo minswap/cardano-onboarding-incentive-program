@@ -1,0 +1,77 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.1.4/schema.json",
+	"vcs": {
+		"defaultBranch": "origin/main",
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"files": {
+		"includes": ["packages/**", "!**/.next/**", "!**/public/**", "!packages/interface/src/lotties/**"]
+	},
+	"formatter": {
+		"enabled": true,
+		"lineWidth": 120,
+		"bracketSpacing": true,
+		"useEditorconfig": true,
+		"attributePosition": "multiline"
+	},
+	"linter": {
+		"enabled": true,
+		"domains": {
+			"next": "recommended",
+			"react": "recommended"
+		},
+		"rules": {
+			"recommended": true,
+			"complexity": {
+				"recommended": true,
+				"noStaticOnlyClass": "off",
+				"useLiteralKeys": "off"
+			},
+			"security": {
+				"noDangerouslySetInnerHtml": "off"
+			},
+			"correctness": {
+				"recommended": true,
+				"noNodejsModules": "off"
+			},
+			"performance": {
+				"recommended": true
+			},
+			"suspicious": {
+				"recommended": true,
+				"noShadowRestrictedNames": "off"
+			},
+			"a11y": {
+				"noStaticElementInteractions": "off",
+				"useKeyWithClickEvents": "off"
+			}
+		}
+	},
+	"javascript": {
+		"formatter": {
+			"arrowParentheses": "always",
+			"quoteStyle": "double",
+			"semicolons": "always",
+			"trailingCommas": "all"
+		}
+	},
+	"json": {
+		"parser": {
+			"allowComments": true,
+			"allowTrailingCommas": true
+		}
+	},
+	"assist": {
+		"enabled": true,
+		"actions": {
+			"source": {
+				"organizeImports": "on",
+				"useSortedAttributes": "on",
+				"useSortedProperties": "on",
+				"recommended": true
+			}
+		}
+	}
+}

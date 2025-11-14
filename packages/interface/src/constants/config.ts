@@ -1,0 +1,5 @@
+export const CONFIG = {
+	NEXT_PUBLIC_API_ENDPOINT: process.env.NEXT_PUBLIC_API_ENDPOINT as string,
+	NEXT_PUBLIC_ASSET_LOGO_URL: process.env.NEXT_PUBLIC_ASSET_LOGO_URL as string,
+	NEXT_PUBLIC_MINSWAP_URL: process.env.NEXT_PUBLIC_MINSWAP_URL as string,
+};

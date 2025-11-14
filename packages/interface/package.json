@@ -1,0 +1,39 @@
+{
+	"name": "@mcdo-incentive-program/interface",
+	"version": "1.0.0",
+	"description": "",
+	"type": "module",
+	"scripts": {
+		"dev": "PORT=3002 next dev --turbopack",
+		"build": "next build",
+		"start": "next start"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@radix-ui/react-popover": "^1.1.14",
+		"@radix-ui/react-tooltip": "^1.2.7",
+		"@remixicon/react": "^4.6.0",
+		"@tanstack/react-query": "^5.81.5",
+		"class-variance-authority": "^0.7.1",
+		"clsx": "^2.1.1",
+		"date-fns": "^4.1.0",
+		"embla-carousel-auto-scroll": "^8.6.0",
+		"embla-carousel-react": "^8.6.0",
+		"from-exponential": "^1.1.1",
+		"ky": "^1.8.1",
+		"lottie-react": "^2.4.1",
+		"next": "^15.3.4",
+		"react": "^19.1.0",
+		"tailwind-merge": "^3.3.1",
+		"tailwindcss-animate": "^1.0.7"
+	},
+	"devDependencies": {
+		"@tailwindcss/postcss": "^4.1.11",
+		"@types/react": "19.1.8",
+		"babel-plugin-react-compiler": "19.1.0-rc.2",
+		"postcss": "^8.5.6",
+		"tailwindcss": "^4.1.11"
+	}
+}

@@ -1,0 +1,65 @@
+x-base-backend: &base-backend
+  build:
+    dockerfile: packages/api/Dockerfile
+    context: ../..
+  restart: always
+
+services:
+  trading-point-api:
+    <<: *base-backend
+    environment:
+      API_REDIS_URL: api-redis://default:123456@redis:6379
+      REDIS_URL: redis://default:123456@redis:6379
+      API_PORT: 80
+      EVENT_START_TIME: 
+      EVENT_END_TIME: 
+    command: bash -c "pnpm tsx ./src/cmd/main.ts"
+    healthcheck:
+      test: curl -f http://localhost:80/health
+      interval: 5s
+      retries: 3
+      start_period: 5s
+    ports:
+      - 80:80
+
+  point-aggr-cron:
+    <<: *base-backend
+    restart: always
+    environment:
+      POSTGRES_URL:
+      REDIS_URL: redis://default:123456@redis:6379
+      MINSWAP_THIRD_PARTY_API:
+      INTERVAL: 180
+      EVENT_START_TIME: 
+      EVENT_END_TIME: 
+    command: bash -c "pnpm tsx ./src/cmd/point-aggregator-cron/point-aggregator-cron.ts"
+
+  historical-price:
+    <<: *base-backend
+    environment:
+      EVENT_START_TIME: 
+      EVENT_END_TIME: 
+      REDIS_URL: redis://default:123456@redis:6379
+    command: bash -c "pnpm tsx ./src/cmd/historical-price/historical-price.ts"
+
+  redis:
+    platform: linux/amd64
+    image: redis:7
+    command: --requirepass 123456
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-data:/data
+    
+  api-redis:
+    platform: linux/amd64
+    image: redis:7
+    command: --requirepass 123456
+    ports:
+      - 6380:6379
+    volumes:
+      - redis-api-data:/data
+
+volumes:
+  redis-data: {}
+  redis-api-data: {}

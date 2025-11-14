@@ -1,0 +1,219 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+  schemas  = ["dex_syncer", "dex_v2_syncer", "stableswap_syncer"]
+}
+
+model dex_syncer_order {
+  id                      BigInt    @id @default(autoincrement())
+  sender                  String    @db.VarChar
+  receiver                String    @db.VarChar
+  receiver_datum_hash     String?   @db.VarChar
+  step                    String    @db.VarChar
+  output_ada              BigInt
+  batcher_fee             BigInt
+  datum_hash              String    @db.VarChar
+  datum                   String    @db.VarChar
+  lp_asset                String    @db.VarChar
+  created_tx_id           String    @db.VarChar
+  created_tx_index        Int
+  cancelled_tx_id         String?   @db.VarChar
+  batch_tx_id             String?   @db.VarChar
+  sender_stake_address    String?   @db.VarChar
+  created_at              DateTime  @db.Timestamptz(6)
+  updated_at              DateTime? @db.Timestamptz(6)
+  batcher_fee_contributed BigInt?
+  metadata                Json?
+  value                   String    @db.VarChar
+  action                  String    @db.VarChar
+  category                String    @db.VarChar
+  executed_value          String?   @db.VarChar
+  lp_fee                  String?   @db.VarChar
+  batch_tx_index          Int?
+  block_id                BigInt
+  updated_block_id        BigInt?
+  address                 String    @db.VarChar
+
+  @@unique([created_tx_id, created_tx_index])
+  @@index([batch_tx_id], map: "dex_order_batch_tx_id_idx")
+  @@index([block_id], map: "dex_order_block_id_idx")
+  @@index([category], map: "dex_order_category_idx", type: Hash)
+  @@index([created_tx_id], map: "dex_order_created_tx_id_idx")
+  @@index([lp_asset], map: "dex_order_lp_asset_idx", type: Hash)
+  @@index([receiver], map: "dex_order_receiver_idx", type: Hash)
+  @@index([sender], map: "dex_order_sender_idx", type: Hash)
+  @@index([sender_stake_address], map: "dex_order_sender_stake_address_idx", type: Hash)
+  @@index([cancelled_tx_id])
+  @@map("order")
+  @@schema("dex_syncer")
+}
+
+model dex_syncer_trading {
+  id                   BigInt   @id @default(autoincrement())
+  lp_asset             String   @db.VarChar
+  asset_in             String   @db.VarChar
+  amount_in            Decimal  @db.Decimal
+  asset_out            String   @db.VarChar
+  amount_out           Decimal  @db.Decimal
+  batcher_fee          Decimal  @db.Decimal
+  volume_ada           Decimal  @db.Decimal
+  sender               String   @db.VarChar
+  sender_stake_address String?  @db.VarChar
+  receiver             String   @db.VarChar
+  created_tx_id        String   @db.VarChar
+  created_tx_index     Int
+  batch_tx_id          String   @db.VarChar
+  action               String   @db.VarChar
+  batched_at           DateTime @db.Timestamptz(6)
+  block_id             BigInt
+
+  @@unique([created_tx_id, created_tx_index])
+  @@index([block_id], map: "dex_trading_block_id_idx")
+  @@map("trading")
+  @@schema("dex_syncer")
+}
+
+model dex_v2_syncer_order {
+  id                      BigInt    @id @default(autoincrement())
+  canceller               String    @db.VarChar
+  canceller_type          Int
+  refund_receiver         String    @db.VarChar
+  refund_receiver_datum   String    @db.VarChar
+  success_receiver        String    @db.VarChar
+  success_receiver_datum  String    @db.VarChar
+  lp_asset                String    @db.VarChar
+  step                    String    @db.VarChar
+  output_ada              BigInt
+  batcher_fee             BigInt
+  expired_time            BigInt?
+  expiry_max_tip          BigInt?
+  datum                   String    @db.VarChar
+  created_tx_id           String    @db.VarChar
+  created_tx_index        Int
+  batch_tx_id             String?   @db.VarChar
+  batch_tx_index          Int?
+  cancelled_tx_id         String?   @db.VarChar
+  cancelled_address       String?   @db.VarChar
+  cancelled_by            String?   @db.VarChar
+  sender_stake_address    String?   @db.VarChar
+  executed_value          String?   @db.VarChar
+  used_batcher_fee        BigInt?
+  batcher_fee_contributed BigInt?
+  metadata                Json?
+  value                   String    @db.VarChar
+  action                  String    @db.VarChar
+  created_at              DateTime  @db.Timestamptz(6)
+  updated_at              DateTime? @db.Timestamptz(6)
+  is_original_order       Boolean
+  linked_tx               String    @db.VarChar
+  lp_fee                  String?   @db.VarChar
+  block_id                BigInt
+  updated_block_id        BigInt?
+  address                 String    @db.VarChar
+
+  @@unique([created_tx_id, created_tx_index])
+  @@index([batch_tx_id], map: "dex_v2_order_batch_tx_id_idx")
+  @@index([block_id], map: "dex_v2_order_block_id_idx")
+  @@index([cancelled_tx_id], map: "dex_v2_order_cancelled_tx_id_idx")
+  @@index([created_tx_id], map: "dex_v2_order_created_tx_id_idx")
+  @@index([lp_asset], map: "dex_v2_order_lp_asset_idx", type: Hash)
+  @@index([refund_receiver], map: "dex_v2_order_refund_receiver_idx", type: Hash)
+  @@index([sender_stake_address], map: "dex_v2_order_sender_stake_address_idx", type: Hash)
+  @@index([success_receiver], map: "dex_v2_order_success_receiver_idx", type: Hash)
+  @@index([updated_block_id], map: "dex_v2_order_updated_block_id_idx")
+  @@map("order")
+  @@schema("dex_v2_syncer")
+}
+
+model dex_v2_syncer_trading {
+  id                   BigInt   @id @default(autoincrement())
+  lp_asset             String   @db.VarChar
+  asset_in             String   @db.VarChar
+  amount_in            Decimal  @db.Decimal
+  asset_out            String   @db.VarChar
+  amount_out           Decimal  @db.Decimal
+  batcher_fee          Decimal  @db.Decimal
+  volume_ada           Decimal  @db.Decimal
+  sender               String   @db.VarChar
+  sender_stake_address String?  @db.VarChar
+  receiver             String   @db.VarChar
+  created_tx_id        String   @db.VarChar
+  created_tx_index     Int
+  batch_tx_id          String   @db.VarChar
+  action               String   @db.VarChar
+  batched_at           DateTime @db.Timestamptz(6)
+  block_id             BigInt
+
+  @@index([block_id], map: "dex_v2_trading_block_id_idx")
+  @@map("trading")
+  @@schema("dex_v2_syncer")
+}
+
+model stableswap_syncer_order {
+  id                      BigInt    @id @default(autoincrement())
+  sender                  String    @db.VarChar
+  sender_stake_address    String?   @db.VarChar
+  receiver                String    @db.VarChar
+  receiver_datum_hash     String?   @db.VarChar
+  step                    String    @db.VarChar
+  output_ada              BigInt
+  batcher_fee             BigInt
+  datum                   String    @db.VarChar
+  lp_asset                String    @db.VarChar
+  created_tx_id           String    @db.VarChar
+  created_tx_index        Int
+  cancelled_tx_id         String?   @db.VarChar
+  batch_tx_id             String?   @db.VarChar
+  executed_value          String?   @db.VarChar
+  created_at              DateTime  @db.Timestamptz(6)
+  updated_at              DateTime? @db.Timestamptz(6)
+  batcher_fee_contributed BigInt?
+  metadata                Json?
+  value                   String    @db.VarChar
+  action                  String    @db.VarChar
+  lp_fee                  String?   @db.VarChar
+  block_id                BigInt
+  updated_block_id        BigInt?
+  address                 String    @db.VarChar
+
+  @@unique([created_tx_id, created_tx_index])
+  @@index([action], map: "stable_order_action_idx", type: Hash)
+  @@index([batch_tx_id], map: "stable_order_batch_tx_id_idx")
+  @@index([block_id], map: "stable_order_block_id_idx")
+  @@index([cancelled_tx_id], map: "stable_order_cancelled_tx_id_idx")
+  @@index([lp_asset], map: "stable_order_lp_asset_idx")
+  @@index([receiver], map: "stable_order_receiver_idx", type: Hash)
+  @@index([sender], map: "stable_order_sender_idx", type: Hash)
+  @@index([sender_stake_address], map: "stable_order_sender_stake_address_idx")
+  @@index([updated_block_id], map: "stable_order_updated_block_id_idx")
+  @@map("order")
+  @@schema("stableswap_syncer")
+}
+
+model stableswap_syncer_trading {
+  id                   BigInt   @id @default(autoincrement())
+  lp_asset             String   @db.VarChar
+  asset_in             String   @db.VarChar
+  amount_in            Decimal  @db.Decimal
+  asset_out            String   @db.VarChar
+  amount_out           Decimal  @db.Decimal
+  batcher_fee          Decimal  @db.Decimal
+  sender               String   @db.VarChar
+  sender_stake_address String?  @db.VarChar
+  receiver             String   @db.VarChar
+  created_tx_id        String   @db.VarChar
+  created_tx_index     Int
+  batch_tx_id          String   @db.VarChar
+  action               String   @db.VarChar
+  batched_at           DateTime @db.Timestamptz(6)
+  block_id             BigInt
+
+  @@index([block_id], map: "stable_trading_block_id_idx")
+  @@map("trading")
+  @@schema("stableswap_syncer")
+}

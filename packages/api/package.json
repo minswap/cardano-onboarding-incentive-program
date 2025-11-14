@@ -1,0 +1,39 @@
+{
+	"name": "@mcdo-incentive-program/api",
+	"version": "1.0.0",
+	"description": "",
+	"type": "module",
+	"scripts": {
+		"dev": "tsx src/index.ts",
+		"build": "tsc",
+		"start": "node build/index.js",
+		"type-check": "tsc --noEmit",
+		"prisma:dbpull": "prisma db pull --schema=./src/database/prisma/schema.prisma",
+		"prisma:generate": "prisma generate --schema=./src/database/prisma/schema.prisma",
+		"postinstall": "prisma generate --schema=./src/database/prisma/schema.prisma",
+		"test": "echo 'No tests configured' && exit 0"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@fastify/cors": "^11.0.1",
+		"@fastify/rate-limit": "^10.3.0",
+		"@minswap/tiny-invariant": "^1.2.0",
+		"@prisma/client": "6.11.1",
+		"@stricahq/typhonjs": "^3.0.0",
+		"bignumber.js": "^9.3.1",
+		"dotenv": "^17.0.1",
+		"exponential-backoff": "^3.1.2",
+		"fastify": "^5.4.0",
+		"ioredis": "^5.6.1",
+		"json-bigint": "^1.0.0",
+		"node-cron": "^4.2.1"
+	},
+	"devDependencies": {
+		"@tsconfig/node22": "^22.0.2",
+		"@types/json-bigint": "^1.0.4",
+		"prisma": "6.11.1",
+		"tsx": "^4.20.3"
+	}
+}
